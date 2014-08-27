@@ -1,0 +1,19 @@
+{
+	"name": "private-ips",
+	"version": "0.0.1",
+	"description": "Node.js module checking whether the domain points to private IP addresses",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wormly/private-ips"
+	},
+	"dependencies": {
+		"async": "",
+		"ip": "",
+		"node.extend": ""
+	},
+	"devDependencies": {
+		"jasmine-node": "",
+		"wormly-specutils": ""
+	},
+	"license": "MIT"
+}
