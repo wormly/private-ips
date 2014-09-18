@@ -43,10 +43,16 @@ Checker.prototype.isPrivate = function (domain, cb) {
 	}.bind(this));
 	
 	async.parallel(types, function(err, results) {
-		if (err) return cb(err); 
+		if (err) throw err; 
 		
-		var hasPrivateIps = results.filter(function(isprivate) {
-			return isprivate;
+		var resultsWithoutErorrs = results.filter(function(result) {
+			return ! result.error;
+		});
+		
+		if (resultsWithoutErorrs.length == 0) return cb(results[0].error);
+		
+		var hasPrivateIps = resultsWithoutErorrs.filter(function(result) {
+			return result.hasPrivate;
 		}).length > 0;
 		
 		cb(err, hasPrivateIps);
@@ -55,9 +61,15 @@ Checker.prototype.isPrivate = function (domain, cb) {
 
 Checker.prototype._checkDomain = function (domain, type, cb) {
 	this.dns['resolve'+type](domain, function (e, addresses) {
-		if (e) return cb(e);
+		var result = {
+			error: e
+		};
 		
-		cb(null, this._hasPrivateIps(addresses));
+		if (! e) {
+			result.hasPrivate = this._hasPrivateIps(addresses)
+		}
+		
+		cb(null, result);
 	}.bind(this));
 };
 

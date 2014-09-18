@@ -1,6 +1,6 @@
 {
 	"name": "private-ips",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Node.js module checking whether the domain points to private IP addresses",
 	"repository": {
 		"type": "git",

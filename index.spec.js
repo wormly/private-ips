@@ -73,4 +73,28 @@ describe('private ips', function () {
 		
 		expect(cb).toHaveBeenCalledWith(undefined, true);
 	});
+
+	it('all error - return error', function () {
+		checker.isPrivate('google.com', cb);
+
+		expect(dns.resolve4.mostRecentCall.args[0]).toEqual('google.com');
+		expect(dns.resolve6.mostRecentCall.args[0]).toEqual('google.com');
+
+		dns.resolve4.mostRecentCall.args[1]('not found 1');
+		dns.resolve6.mostRecentCall.args[1]('not found 2');
+		
+		expect(cb).toHaveBeenCalledWith('not found 1');
+	});
+
+	it('not all error - return no error', function () {
+		checker.isPrivate('google.com', cb);
+
+		expect(dns.resolve4.mostRecentCall.args[0]).toEqual('google.com');
+		expect(dns.resolve6.mostRecentCall.args[0]).toEqual('google.com');
+
+		dns.resolve4.mostRecentCall.args[1](null, ['12.12.12.12']);
+		dns.resolve6.mostRecentCall.args[1]('not found');
+
+		expect(cb).toHaveBeenCalledWith(undefined, false);
+	});
 });
