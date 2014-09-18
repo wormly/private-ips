@@ -37,17 +37,27 @@ Checker.prototype.isPrivate = function (domain, cb) {
 		console.error(err);
 		return cb(err);
 	}
-
-	async.some(types, this._checkDomain.bind(this, domain), function(hasIps) {
-		cb(null, hasIps);
+	
+	types = types.map(function(type) {
+		return this._checkDomain.bind(this, domain, type)
+	}.bind(this));
+	
+	async.parallel(types, function(err, results) {
+		if (err) return cb(err); 
+		
+		var hasPrivateIps = results.filter(function(isprivate) {
+			return isprivate;
+		}).length > 0;
+		
+		cb(err, hasPrivateIps);
 	});
 };
 
 Checker.prototype._checkDomain = function (domain, type, cb) {
 	this.dns['resolve'+type](domain, function (e, addresses) {
-		if (e) return cb(false);
-
-		cb(this._hasPrivateIps(addresses));
+		if (e) return cb(e);
+		
+		cb(null, this._hasPrivateIps(addresses));
 	}.bind(this));
 };
 

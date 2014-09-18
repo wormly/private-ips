@@ -59,7 +59,7 @@ describe('private ips', function () {
 
 		dns.resolve4.mostRecentCall.args[1]('missing');
 
-		expect(cb).toHaveBeenCalledWith(null, false);
+		expect(cb).toHaveBeenCalledWith('missing');
 	});
 	
 	it('checks ranges', function () {
@@ -70,7 +70,7 @@ describe('private ips', function () {
 		expect(dns.resolve4.mostRecentCall.args[0]).toEqual('google.com');
 
 		dns.resolve4.mostRecentCall.args[1](null, ['127.0.0.1']);
-
-		expect(cb).toHaveBeenCalledWith(null, true);
+		
+		expect(cb).toHaveBeenCalledWith(undefined, true);
 	});
 });
